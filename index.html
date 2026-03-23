@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DSA Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -15,429 +16,408 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #070b14;
-      --surface:   #0d1220;
-      --card:      #111827;
-      --card2:     #161f30;
-      --border:    #1e2d45;
-      --border2:   #243447;
+      /* Premium Dark Mode Palette */
+      --bg:          #09090b;
+      --surface:     #121214;
+      --card:        #18181b;
+      --card-hover:  #27272a;
+      --border:      #27272a;
+      --border-focus:#3f3f46;
 
-      --blue:      #3b82f6;
-      --blue-dim:  #1e40af;
-      --blue-glow: rgba(59,130,246,0.18);
-      --cyan:      #22d3ee;
+      --primary:     #6366f1; /* Indigo */
+      --primary-dim: rgba(99, 102, 241, 0.15);
+      --primary-glow:rgba(99, 102, 241, 0.3);
+      --accent:      #a855f7; /* Purple */
 
-      --green:     #22c55e;
-      --green-dim: rgba(34,197,94,0.15);
-      --amber:     #f59e0b;
-      --amber-dim: rgba(245,158,11,0.15);
-      --red:       #ef4444;
-      --red-dim:   rgba(239,68,68,0.15);
+      --success:     #10b981;
+      --success-dim: rgba(16, 185, 129, 0.15);
+      --warning:     #f59e0b;
+      --warning-dim: rgba(245, 158, 11, 0.15);
+      --danger:      #ef4444;
+      --danger-dim:  rgba(239, 68, 68, 0.15);
 
-      --text:      #e2e8f0;
-      --text2:     #94a3b8;
-      --text3:     #4b6080;
+      --text-main:   #fafafa;
+      --text-muted:  #a1a1aa;
+      --text-faint:  #52525b;
 
-      --font-h:    'Rajdhani', sans-serif;
-      --font-b:    'Nunito Sans', sans-serif;
-      --font-m:    'Fira Code', monospace;
+      --font-body:   'Inter', sans-serif;
+      --font-head:   'Outfit', sans-serif;
+      --font-mono:   'JetBrains Mono', monospace;
 
-      --radius:    10px;
-      --transition: 200ms ease;
+      --radius:      12px;
+      --radius-sm:   8px;
+      --transition:  all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-b);
+      color: var(--text-main);
+      font-family: var(--font-body);
       font-size: 14px;
       line-height: 1.6;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* subtle dot grid background */
+    /* Subtle mesh background */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle, #1e2d45 1px, transparent 1px);
-      background-size: 28px 28px;
-      opacity: 0.45;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.05) 0px, transparent 50%);
     }
 
     #root { position: relative; z-index: 1; }
 
     /* ── Scrollbar ─────────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--surface); }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--blue-dim); }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 
     /* ── Layout ───────────────────────────────────────────── */
-    .app { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
+    .app { max-width: 1040px; margin: 0 auto; padding: 0 24px 80px; }
 
     /* ── Header ───────────────────────────────────────────── */
     .header {
-      padding: 32px 0 24px;
+      padding: 48px 0 32px;
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
-    .header-logo { display: flex; align-items: center; gap: 14px; }
+    .header-logo { display: flex; align-items: center; gap: 16px; }
     .logo-icon {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      border-radius: 10px;
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-m); font-size: 20px; color: #fff;
-      font-weight: 500; box-shadow: 0 0 24px var(--blue-glow);
+      font-family: var(--font-mono); font-size: 20px; color: #fff;
+      font-weight: 600; box-shadow: 0 8px 24px var(--primary-glow);
     }
     .header h1 {
-      font-family: var(--font-h); font-size: 28px; font-weight: 700;
-      color: var(--text); letter-spacing: 0.5px;
+      font-family: var(--font-head); font-size: 32px; font-weight: 700;
+      letter-spacing: -0.5px; line-height: 1.2;
     }
-    .header h1 span { color: var(--blue); }
-    .header-sub { font-size: 12px; color: var(--text3); font-family: var(--font-m); }
-
-    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .header h1 span { 
+      background: linear-gradient(to right, #a5b4fc, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header-sub { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
 
     /* ── Stats Row ────────────────────────────────────────── */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr) 2fr;
-      gap: 12px; margin-bottom: 24px;
+      gap: 16px; margin-bottom: 32px;
     }
     .stat-card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
-      position: relative; overflow: hidden;
-      transition: border-color var(--transition);
+      padding: 20px;
+      transition: var(--transition);
+      display: flex; flex-direction: column; justify-content: space-between;
     }
-    .stat-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    }
-    .stat-card.total::before  { background: var(--blue); }
-    .stat-card.done::before   { background: var(--green); }
-    .stat-card.prog::before   { background: var(--amber); }
-    .stat-card.todo::before   { background: var(--text3); }
-    .stat-card.progress-card::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .stat-card:hover { border-color: var(--border-focus); transform: translateY(-2px); }
+    
     .stat-label {
-      font-size: 11px; font-family: var(--font-m); color: var(--text3);
-      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+      font-size: 13px; font-weight: 500; color: var(--text-muted);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
     }
-    .stat-value {
-      font-family: var(--font-h); font-size: 32px; font-weight: 700;
+    .stat-label::before {
+      content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
     }
-    .stat-card.total .stat-value  { color: var(--blue); }
-    .stat-card.done  .stat-value  { color: var(--green); }
-    .stat-card.prog  .stat-value  { color: var(--amber); }
-    .stat-card.todo  .stat-value  { color: var(--text2); }
+    .stat-card.total .stat-label::before  { background: var(--primary); }
+    .stat-card.done .stat-label::before   { background: var(--success); }
+    .stat-card.prog .stat-label::before   { background: var(--warning); }
+    .stat-card.todo .stat-label::before   { background: var(--text-faint); }
+    .stat-card.progress-card .stat-label::before { display: none; }
 
+    .stat-value {
+      font-family: var(--font-head); font-size: 36px; font-weight: 600; line-height: 1;
+    }
+    
     .progress-card { grid-column: span 1; }
     .progress-bar-wrap {
-      margin-top: 10px;
-      background: var(--border); border-radius: 4px; height: 8px; overflow: hidden;
+      margin-top: 16px; margin-bottom: 12px;
+      background: var(--surface); border-radius: 999px; height: 6px; overflow: hidden;
     }
     .progress-bar-fill {
-      height: 100%; border-radius: 4px;
-      background: linear-gradient(90deg, var(--blue), var(--cyan));
-      transition: width 600ms ease;
-    }
-    .progress-pct {
-      font-family: var(--font-m); font-size: 11px; color: var(--text2);
-      margin-top: 5px;
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* ── Diff Pills ────────────────────────────────────────── */
-    .diff-pills { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .diff-pills { display: flex; gap: 8px; flex-wrap: wrap; }
     .diff-pill {
-      font-size: 11px; font-family: var(--font-m); padding: 3px 10px;
-      border-radius: 20px; border: 1px solid;
+      font-size: 11px; font-family: var(--font-mono); padding: 4px 10px;
+      border-radius: 6px; font-weight: 500;
     }
-    .diff-pill.easy   { color: var(--green); border-color: rgba(34,197,94,0.35); background: var(--green-dim); }
-    .diff-pill.medium { color: var(--amber); border-color: rgba(245,158,11,0.35); background: var(--amber-dim); }
-    .diff-pill.hard   { color: var(--red);   border-color: rgba(239,68,68,0.35);  background: var(--red-dim); }
+    .diff-pill.easy   { color: var(--success); background: var(--success-dim); }
+    .diff-pill.medium { color: var(--warning); background: var(--warning-dim); }
+    .diff-pill.hard   { color: var(--danger);  background: var(--danger-dim); }
 
     /* ── Toolbar ──────────────────────────────────────────── */
     .toolbar {
-      display: flex; gap: 12px; margin-bottom: 20px;
+      display: flex; gap: 16px; margin-bottom: 24px;
       flex-wrap: wrap; align-items: center;
+      background: var(--card); padding: 12px; border-radius: var(--radius);
+      border: 1px solid var(--border);
     }
-    .search-wrap {
-      flex: 1; min-width: 220px; position: relative;
-    }
+    .search-wrap { flex: 1; min-width: 240px; position: relative; }
     .search-icon {
-      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-      color: var(--text3); font-size: 14px; pointer-events: none;
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); font-size: 14px; pointer-events: none;
     }
     .search-input {
-      width: 100%; padding: 9px 12px 9px 36px;
-      background: var(--card); border: 1px solid var(--border2);
-      border-radius: 8px; color: var(--text); font-family: var(--font-b); font-size: 13px;
-      outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+      width: 100%; padding: 10px 16px 10px 40px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text-main); font-family: var(--font-body);
+      font-size: 14px; outline: none; transition: var(--transition);
     }
     .search-input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px var(--blue-glow);
+      border-color: var(--primary); background: var(--bg);
+      box-shadow: 0 0 0 3px var(--primary-dim);
     }
-    .search-input::placeholder { color: var(--text3); }
+    .search-input::placeholder { color: var(--text-faint); }
 
-    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-group { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
     .filter-btn {
-      padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px;
-      font-family: var(--font-b); font-weight: 600;
-      border: 1px solid var(--border2);
-      background: var(--card); color: var(--text2);
-      transition: all var(--transition);
+      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+      font-family: var(--font-body); font-weight: 500; border: none;
+      background: transparent; color: var(--text-muted);
+      transition: var(--transition);
     }
-    .filter-btn:hover { border-color: var(--blue); color: var(--text); }
-    .filter-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
-    .filter-btn.easy.active   { background: var(--green-dim); border-color: var(--green); color: var(--green); }
-    .filter-btn.medium.active { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
-    .filter-btn.hard.active   { background: var(--red-dim);   border-color: var(--red);   color: var(--red); }
+    .filter-btn:hover { color: var(--text-main); }
+    .filter-btn.active { background: var(--border-focus); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    
+    /* Specific active colors for difficulty */
+    .filter-btn.easy.active   { background: var(--success-dim); color: var(--success); }
+    .filter-btn.medium.active { background: var(--warning-dim); color: var(--warning); }
+    .filter-btn.hard.active   { background: var(--danger-dim);  color: var(--danger); }
 
     /* ── Topic Section ────────────────────────────────────── */
-    .topic-section { margin-bottom: 16px; }
+    .topic-section { margin-bottom: 16px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
 
     .topic-header {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 18px; border-radius: var(--radius);
-      background: var(--card); border: 1px solid var(--border);
-      cursor: pointer; user-select: none;
-      transition: border-color var(--transition), background var(--transition);
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 24px; background: var(--card); 
+      cursor: pointer; user-select: none; transition: var(--transition);
     }
-    .topic-header:hover { border-color: var(--blue); background: var(--card2); }
-    .topic-header.open  { border-color: var(--blue-dim); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+    .topic-header:hover { background: var(--card-hover); }
+    .topic-header.open  { border-bottom: 1px solid var(--border); }
 
     .topic-chevron {
-      font-size: 12px; color: var(--text3);
-      transition: transform 200ms ease;
+      font-size: 12px; color: var(--text-muted);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .topic-chevron.open { transform: rotate(90deg); }
 
     .topic-name {
-      font-family: var(--font-h); font-size: 17px; font-weight: 700;
-      color: var(--text); letter-spacing: 0.3px; flex: 1;
+      font-family: var(--font-head); font-size: 18px; font-weight: 600;
+      color: var(--text-main); flex: 1;
     }
     .topic-badge {
-      font-family: var(--font-m); font-size: 11px;
-      background: var(--card2); border: 1px solid var(--border2);
-      border-radius: 20px; padding: 2px 10px; color: var(--text2);
+      font-size: 12px; font-weight: 500;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px; color: var(--text-muted);
     }
     .topic-mini-bar {
-      width: 90px; height: 5px;
-      background: var(--border); border-radius: 3px; overflow: hidden;
+      width: 100px; height: 6px;
+      background: var(--surface); border-radius: 999px; overflow: hidden;
+      border: 1px solid var(--border);
     }
     .topic-mini-fill {
-      height: 100%; border-radius: 3px;
-      background: linear-gradient(90deg, var(--blue), var(--cyan));
-      transition: width 400ms ease;
+      height: 100%; border-radius: 999px;
+      background: var(--text-muted); transition: width 0.6s ease;
     }
-    .topic-done-count { font-family: var(--font-m); font-size: 11px; color: var(--text3); }
+    .topic-header.open .topic-mini-fill { background: var(--primary); }
+    .topic-done-count { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); width: 44px; text-align: right; }
 
     /* ── Table container ──────────────────────────────────── */
-    .topic-body {
-      border: 1px solid var(--blue-dim); border-top: none;
-      border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius);
-      overflow: hidden;
-    }
+    .topic-body { background: var(--bg); }
 
     /* ── Subtopic group ───────────────────────────────────── */
     .subtopic-group { border-bottom: 1px solid var(--border); }
     .subtopic-group:last-child { border-bottom: none; }
 
     .subtopic-label {
-      padding: 8px 18px;
-      background: var(--surface);
-      font-family: var(--font-m); font-size: 11px; color: var(--cyan);
-      letter-spacing: 0.8px; text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
+      padding: 12px 24px; background: rgba(255,255,255,0.02);
+      font-family: var(--font-head); font-size: 12px; color: var(--primary);
+      letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600;
+      border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
     }
 
     /* ── Question Row ─────────────────────────────────────── */
     .q-row {
-      display: grid;
-      grid-template-columns: 44px 1fr 110px 90px;
-      align-items: center; gap: 0;
-      padding: 0;
+      display: grid; grid-template-columns: 50px 1fr 120px 100px;
+      align-items: center; background: transparent; transition: var(--transition);
       border-bottom: 1px solid var(--border);
-      background: var(--card);
-      transition: background var(--transition);
     }
     .q-row:last-child { border-bottom: none; }
-    .q-row:hover { background: var(--card2); }
-    .q-row.done-row { opacity: 0.72; }
+    .q-row:hover { background: var(--surface); }
+    .q-row.done-row { opacity: 0.6; }
+    .q-row.done-row:hover { opacity: 1; }
 
-    .q-status-cell {
-      display: flex; justify-content: center; align-items: center;
-      padding: 12px 0; cursor: pointer;
-    }
+    .q-status-cell { display: flex; justify-content: center; align-items: center; padding: 14px 0; }
     .status-btn {
-      width: 22px; height: 22px; border-radius: 50%;
-      border: 2px solid var(--border2); cursor: pointer;
+      width: 24px; height: 24px; border-radius: 6px;
+      border: 2px solid var(--border-focus); cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      font-size: 11px; transition: all var(--transition); background: transparent;
-      flex-shrink: 0;
+      font-size: 12px; transition: var(--transition); background: var(--card);
+      flex-shrink: 0; color: transparent; font-weight: bold;
     }
-    .status-btn.todo     { border-color: var(--text3); }
-    .status-btn.todo:hover { border-color: var(--blue); }
-    .status-btn.in_progress { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
-    .status-btn.done     { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+    .status-btn.todo:hover { border-color: var(--primary); background: var(--primary-dim); }
+    .status-btn.in_progress { border-color: var(--warning); background: var(--warning); color: var(--bg); }
+    .status-btn.done { border-color: var(--success); background: var(--success); color: var(--bg); }
 
-    .q-name-cell {
-      padding: 11px 12px 11px 4px;
-    }
+    .q-name-cell { padding: 14px 12px 14px 0; }
     .q-name-link {
-      color: var(--text); text-decoration: none; font-size: 13px;
-      font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
-      transition: color var(--transition);
+      color: var(--text-main); text-decoration: none; font-size: 14px;
+      font-weight: 500; display: inline-flex; align-items: center; gap: 8px;
+      transition: var(--transition);
     }
-    .q-name-link:hover { color: var(--blue); }
-    .q-name-link .ext-icon { font-size: 10px; color: var(--text3); opacity: 0.7; }
+    .q-name-link:hover { color: var(--primary); }
+    .q-name-link .ext-icon { font-size: 12px; color: var(--text-faint); }
 
-    .q-diff-cell {
-      padding: 11px 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .q-diff-cell { padding: 14px 12px; display: flex; justify-content: flex-start; }
     .diff-tag {
-      font-family: var(--font-m); font-size: 11px; padding: 3px 10px;
-      border-radius: 20px; border: 1px solid; font-weight: 500;
+      font-size: 12px; font-weight: 500; padding: 4px 10px;
+      border-radius: 6px; display: inline-block; text-align: center; min-width: 68px;
     }
-    .diff-tag.Easy   { color: var(--green); border-color: rgba(34,197,94,0.3);  background: var(--green-dim); }
-    .diff-tag.Medium { color: var(--amber); border-color: rgba(245,158,11,0.3); background: var(--amber-dim); }
-    .diff-tag.Hard   { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: var(--red-dim); }
+    .diff-tag.Easy   { color: var(--success); background: var(--success-dim); }
+    .diff-tag.Medium { color: var(--warning); background: var(--warning-dim); }
+    .diff-tag.Hard   { color: var(--danger);  background: var(--danger-dim); }
 
-    .q-note-cell {
-      padding: 11px 12px;
-      display: flex; align-items: center; justify-content: flex-end;
-    }
+    .q-note-cell { padding: 14px 24px 14px 12px; display: flex; justify-content: flex-end; }
     .note-btn {
-      padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px;
-      font-family: var(--font-b); font-weight: 600;
-      border: 1px solid var(--border2); background: transparent; color: var(--text3);
-      transition: all var(--transition); display: flex; align-items: center; gap: 5px;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;
+      font-family: var(--font-body); font-weight: 500; border: none;
+      background: var(--surface); color: var(--text-muted); transition: var(--transition);
+      display: flex; align-items: center; gap: 6px; border: 1px solid var(--border);
     }
-    .note-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-glow); }
-    .note-btn.has-note { border-color: rgba(245,158,11,0.4); color: var(--amber); background: var(--amber-dim); }
+    .note-btn:hover { border-color: var(--primary); color: var(--text-main); background: var(--card-hover); }
+    .note-btn.has-note { color: var(--accent); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.1); }
 
     /* ── Notes Inline Panel ───────────────────────────────── */
     .notes-panel {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 14px 18px;
-      animation: slideDown 180ms ease forwards;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 16px 24px; animation: slideDown 0.2s ease-out forwards;
     }
     @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-6px); }
+      from { opacity: 0; transform: translateY(-4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .notes-panel-header {
-      font-family: var(--font-m); font-size: 11px; color: var(--cyan);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 8px;
+      font-family: var(--font-head); font-size: 13px; color: var(--text-main);
+      margin-bottom: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;
     }
     .notes-textarea {
-      width: 100%; min-height: 90px;
-      background: var(--card); border: 1px solid var(--border2);
-      border-radius: 8px; padding: 10px 12px;
-      color: var(--text); font-family: var(--font-b); font-size: 13px;
-      resize: vertical; outline: none;
-      transition: border-color var(--transition), box-shadow var(--transition);
+      width: 100%; min-height: 100px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      color: var(--text-main); font-family: var(--font-body); font-size: 14px;
+      resize: vertical; outline: none; transition: var(--transition);
+      line-height: 1.5;
     }
-    .notes-textarea:focus {
-      border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow);
-    }
-    .notes-textarea::placeholder { color: var(--text3); font-size: 12px; }
-    .notes-actions {
-      display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;
-    }
+    .notes-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
+    .notes-textarea::placeholder { color: var(--text-faint); }
+    .notes-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 12px; }
 
     /* ── Buttons ──────────────────────────────────────────── */
     .btn {
-      padding: 7px 16px; border-radius: 7px; cursor: pointer;
-      font-family: var(--font-b); font-size: 12px; font-weight: 600;
-      border: 1px solid; transition: all var(--transition);
-      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
+      font-family: var(--font-body); font-size: 13px; font-weight: 500;
+      border: 1px solid transparent; transition: var(--transition);
+      display: inline-flex; align-items: center; gap: 8px; justify-content: center;
     }
     .btn-primary {
-      background: var(--blue); border-color: var(--blue);
-      color: #fff;
+      background: var(--primary); color: #fff;
     }
-    .btn-primary:hover { background: #2563eb; box-shadow: 0 0 14px var(--blue-glow); }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-hover); box-shadow: 0 4px 12px var(--primary-glow); }
     .btn-ghost {
-      background: transparent; border-color: var(--border2); color: var(--text2);
+      background: transparent; border-color: var(--border); color: var(--text-main);
     }
-    .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+    .btn-ghost:hover:not(:disabled) { background: var(--surface); border-color: var(--border-focus); }
     .btn-danger {
-      background: transparent; border-color: rgba(239,68,68,0.35); color: var(--red);
+      background: transparent; border-color: var(--danger-dim); color: var(--danger);
     }
-    .btn-danger:hover { background: var(--red-dim); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-danger:hover:not(:disabled) { background: var(--danger-dim); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* ── Loading / Error ──────────────────────────────────── */
     .loading-screen, .error-screen {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 60vh; gap: 16px;
+      justify-content: center; min-height: 40vh; gap: 16px;
+      background: var(--card); border: 1px dashed var(--border-focus);
+      border-radius: var(--radius); padding: 40px;
     }
     .spinner {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 3px solid var(--border);
-      border-top-color: var(--blue);
-      animation: spin 800ms linear infinite;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 3px solid var(--surface); border-top-color: var(--primary);
+      animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text { font-family: var(--font-m); color: var(--text3); font-size: 12px; }
-    .error-msg { color: var(--red); font-family: var(--font-m); font-size: 13px; }
+    .loading-text { font-family: var(--font-mono); color: var(--text-muted); font-size: 13px; }
+    .error-msg { color: var(--danger); font-family: var(--font-mono); font-size: 14px; text-align: center; }
 
     /* ── Toast ────────────────────────────────────────────── */
     .toast {
-      position: fixed; bottom: 24px; right: 24px; z-index: 999;
-      background: var(--card2); border: 1px solid var(--border2);
-      border-radius: 10px; padding: 12px 18px;
-      font-size: 13px; font-weight: 500;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      display: flex; align-items: center; gap: 10px;
-      animation: toastIn 250ms ease forwards;
+      position: fixed; bottom: 32px; right: 32px; z-index: 999;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 20px;
+      font-size: 14px; font-weight: 500; color: var(--text-main);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 12px;
+      animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
-    .toast.success { border-left: 3px solid var(--green); }
-    .toast.error   { border-left: 3px solid var(--red); }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error   { border-left: 4px solid var(--danger); }
     @keyframes toastIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     /* ── Empty ────────────────────────────────────────────── */
     .empty-state {
-      text-align: center; padding: 48px 0; color: var(--text3);
-      font-family: var(--font-m); font-size: 13px;
+      text-align: center; padding: 64px 24px; color: var(--text-muted);
+      font-family: var(--font-body); font-size: 14px; background: var(--card);
+      border: 1px dashed var(--border-focus); border-radius: var(--radius);
     }
 
     /* ── API Config Banner ────────────────────────────────── */
     .api-banner {
-      background: rgba(245,158,11,0.08);
-      border: 1px solid rgba(245,158,11,0.3);
-      border-radius: 8px; padding: 10px 16px; margin-bottom: 20px;
-      font-size: 12px; color: var(--amber);
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
+      font-size: 13px; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; gap: 16px;
     }
+    .api-banner span { font-family: var(--font-head); font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .api-input-wrap { display: flex; gap: 12px; flex: 1; justify-content: flex-end; }
     .api-input {
-      background: var(--card); border: 1px solid var(--border2);
-      border-radius: 6px; padding: 5px 10px;
-      color: var(--text); font-family: var(--font-m); font-size: 12px;
-      outline: none; width: 260px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 8px 12px;
+      color: var(--text-main); font-family: var(--font-mono); font-size: 13px;
+      outline: none; width: 100%; max-width: 320px; transition: var(--transition);
     }
-    .api-input:focus { border-color: var(--blue); }
+    .api-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
 
     /* ── Responsive ───────────────────────────────────────── */
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       .progress-card { grid-column: span 2; }
-      .q-row { grid-template-columns: 40px 1fr 80px; }
+      .q-row { grid-template-columns: 40px 1fr 90px; }
       .q-note-cell { display: none; }
-      .header h1 { font-size: 22px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .api-banner { flex-direction: column; align-items: stretch; }
+      .api-input-wrap { flex-direction: column; }
+      .api-input { max-width: 100%; }
     }
   </style>
 </head>
@@ -489,19 +469,19 @@ function NotesPanel({ qid, initialNotes, onSave, onClose }) {
 
   return (
     <div className="notes-panel">
-      <div className="notes-panel-header">📝 Your Notes</div>
+      <div className="notes-panel-header">📝 Problem Notes</div>
       <textarea
         ref={ta}
         className="notes-textarea"
         value={notes}
         onChange={e => setNotes(e.target.value)}
-        placeholder="Add your approach, key insights, time/space complexity, mistakes to avoid..."
+        placeholder="Document your approach, time/space complexity, or common pitfalls..."
         onKeyDown={e => { if (e.key === 'Escape') onClose(); }}
       />
       <div className="notes-actions">
         <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
         <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving...' : '💾 Save Notes'}
+          {saving ? 'Saving...' : 'Save Notes'}
         </button>
       </div>
     </div>
@@ -545,7 +525,7 @@ function QuestionRow({ q, onStatusChange, onNotesSave }) {
             onClick={() => setNotesOpen(v => !v)}
             title={q.notes ? 'Edit notes' : 'Add notes'}
           >
-            {q.notes ? '📝 Edit' : '+ Note'}
+            {q.notes ? 'Notes' : '+ Add Note'}
           </button>
         </div>
       </div>
@@ -566,7 +546,10 @@ function QuestionRow({ q, onStatusChange, onNotesSave }) {
 function SubtopicGroup({ subtopic, questions, onStatusChange, onNotesSave }) {
   return (
     <div className="subtopic-group">
-      <div className="subtopic-label">⬡ {subtopic}</div>
+      <div className="subtopic-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        {subtopic}
+      </div>
       {questions.map(q => (
         <QuestionRow key={q.id} q={q} onStatusChange={onStatusChange} onNotesSave={onNotesSave} />
       ))}
@@ -670,13 +653,13 @@ function App() {
       });
       if (!r.ok) throw new Error('Failed to update status');
       showToast(
-        newStatus === 'done' ? '✓ Marked as done!' :
-        newStatus === 'in_progress' ? '◑ In progress' : 'Reset to todo'
+        newStatus === 'done' ? 'Marked as done!' :
+        newStatus === 'in_progress' ? 'Moved to in progress' : 'Reset to todo'
       );
     } catch (e) {
       // Rollback
       setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: STATUS_CYCLE[newStatus] } : q));
-      showToast('Failed to save — is the API running?', 'error');
+      showToast('Failed to save — check backend connection', 'error');
     }
   };
 
@@ -691,7 +674,7 @@ function App() {
         body: JSON.stringify({ status: q?.status || 'todo', notes }),
       });
       if (!r.ok) throw new Error('Failed to save notes');
-      showToast('Notes saved!');
+      showToast('Notes saved successfully');
     } catch (e) {
       showToast('Failed to save notes', 'error');
     }
@@ -739,25 +722,33 @@ function App() {
           <div className="logo-icon">{'</>'}</div>
           <div>
             <h1>DSA <span>Tracker</span></h1>
-            <div className="header-sub">// track your algorithm mastery</div>
+            <div className="header-sub">Master your algorithms and data structures</div>
           </div>
         </div>
         <div className="header-actions">
-          <button className="btn btn-ghost" onClick={() => fetchQuestions(apiUrl)}>⟳ Refresh</button>
+          <button className="btn btn-ghost" onClick={() => fetchQuestions(apiUrl)}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Refresh Data
+          </button>
         </div>
       </div>
 
       {/* API Config Banner */}
       <div className="api-banner">
-        <span>⚡ API Endpoint</span>
-        <input
-          className="api-input"
-          value={apiInput}
-          onChange={e => setApiInput(e.target.value)}
-          placeholder="http://localhost:8000"
-          onKeyDown={e => e.key === 'Enter' && applyApiUrl()}
-        />
-        <button className="btn btn-primary" onClick={applyApiUrl}>Connect</button>
+        <span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          API Endpoint
+        </span>
+        <div className="api-input-wrap">
+          <input
+            className="api-input"
+            value={apiInput}
+            onChange={e => setApiInput(e.target.value)}
+            placeholder="http://localhost:8000"
+            onKeyDown={e => e.key === 'Enter' && applyApiUrl()}
+          />
+          <button className="btn btn-primary" onClick={applyApiUrl}>Connect</button>
+        </div>
       </div>
 
       {/* Stats Row */}
@@ -781,7 +772,7 @@ function App() {
           </div>
           <div className="stat-card progress-card">
             <div className="stat-label">Overall Progress</div>
-            <div className="stat-value" style={{fontSize:'24px'}}>{pct}%</div>
+            <div className="stat-value" style={{fontSize:'32px'}}>{pct}%</div>
             <div className="progress-bar-wrap">
               <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
             </div>
@@ -797,10 +788,12 @@ function App() {
       {/* Toolbar */}
       <div className="toolbar">
         <div className="search-wrap">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
           <input
             className="search-input"
-            placeholder="Search problems, topics, subtopics..."
+            placeholder="Search problems or topics..."
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -829,24 +822,24 @@ function App() {
       {loading && (
         <div className="loading-screen">
           <div className="spinner" />
-          <div className="loading-text">Connecting to API...</div>
+          <div className="loading-text">Connecting to backend...</div>
         </div>
       )}
 
       {!loading && error && (
         <div className="error-screen">
-          <div style={{fontSize:'36px'}}>⚡</div>
+          <div style={{fontSize:'48px'}}>🔌</div>
           <div className="error-msg">Cannot reach API: {error}</div>
-          <div style={{color:'var(--text3)', fontFamily:'var(--font-m)', fontSize:'12px', textAlign:'center', maxWidth:'420px'}}>
-            Make sure the FastAPI server is running:<br/>
-            <span style={{color:'var(--cyan)'}}>cd backend && uvicorn main:app --reload --port 8000</span>
+          <div style={{color:'var(--text-muted)', fontSize:'13px', textAlign:'center', maxWidth:'420px', lineHeight:'1.6'}}>
+            Ensure your backend is running and accessible. If running locally:<br/>
+            <span style={{color:'var(--accent)', fontFamily:'var(--font-mono)'}}>uvicorn main:app --reload --port 8000</span>
           </div>
-          <button className="btn btn-primary" onClick={() => fetchQuestions(apiUrl)}>Retry</button>
+          <button className="btn btn-primary" onClick={() => fetchQuestions(apiUrl)}>Retry Connection</button>
         </div>
       )}
 
       {!loading && !error && Object.entries(byTopic).length === 0 && (
-        <div className="empty-state">No problems match your filters.</div>
+        <div className="empty-state">No problems found matching your current filters.</div>
       )}
 
       {!loading && !error && Object.entries(byTopic).map(([topic, qs], i) => (
