@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DSA Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #070b14;
+      --surface:   #0d1220;
+      --card:      #111827;
+      --card2:     #161f30;
+      --border:    #1e2d45;
+      --border2:   #243447;
+
+      --blue:      #3b82f6;
+      --blue-dim:  #1e40af;
+      --blue-glow: rgba(59,130,246,0.18);
+      --cyan:      #22d3ee;
+
+      --green:     #22c55e;
+      --green-dim: rgba(34,197,94,0.15);
+      --amber:     #f59e0b;
+      --amber-dim: rgba(245,158,11,0.15);
+      --red:       #ef4444;
+      --red-dim:   rgba(239,68,68,0.15);
+
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --text3:     #4b6080;
+
+      --font-h:    'Rajdhani', sans-serif;
+      --font-b:    'Nunito Sans', sans-serif;
+      --font-m:    'Fira Code', monospace;
+
+      --radius:    10px;
+      --transition: 200ms ease;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-b);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* subtle dot grid background */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(circle, #1e2d45 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.45;
+    }
+
+    #root { position: relative; z-index: 1; }
+
+    /* ── Scrollbar ─────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--blue-dim); }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .app { max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* ── Header ───────────────────────────────────────────── */
+    .header {
+      padding: 32px 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .header-logo { display: flex; align-items: center; gap: 14px; }
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-m); font-size: 20px; color: #fff;
+      font-weight: 500; box-shadow: 0 0 24px var(--blue-glow);
+    }
+    .header h1 {
+      font-family: var(--font-h); font-size: 28px; font-weight: 700;
+      color: var(--text); letter-spacing: 0.5px;
+    }
+    .header h1 span { color: var(--blue); }
+    .header-sub { font-size: 12px; color: var(--text3); font-family: var(--font-m); }
+
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
+    /* ── Stats Row ────────────────────────────────────────── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 2fr;
+      gap: 12px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative; overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    }
+    .stat-card.total::before  { background: var(--blue); }
+    .stat-card.done::before   { background: var(--green); }
+    .stat-card.prog::before   { background: var(--amber); }
+    .stat-card.todo::before   { background: var(--text3); }
+    .stat-card.progress-card::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+    .stat-label {
+      font-size: 11px; font-family: var(--font-m); color: var(--text3);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .stat-value {
+      font-family: var(--font-h); font-size: 32px; font-weight: 700;
+    }
+    .stat-card.total .stat-value  { color: var(--blue); }
+    .stat-card.done  .stat-value  { color: var(--green); }
+    .stat-card.prog  .stat-value  { color: var(--amber); }
+    .stat-card.todo  .stat-value  { color: var(--text2); }
+
+    .progress-card { grid-column: span 1; }
+    .progress-bar-wrap {
+      margin-top: 10px;
+      background: var(--border); border-radius: 4px; height: 8px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transition: width 600ms ease;
+    }
+    .progress-pct {
+      font-family: var(--font-m); font-size: 11px; color: var(--text2);
+      margin-top: 5px;
+    }
+
+    /* ── Diff Pills ────────────────────────────────────────── */
+    .diff-pills { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .diff-pill {
+      font-size: 11px; font-family: var(--font-m); padding: 3px 10px;
+      border-radius: 20px; border: 1px solid;
+    }
+    .diff-pill.easy   { color: var(--green); border-color: rgba(34,197,94,0.35); background: var(--green-dim); }
+    .diff-pill.medium { color: var(--amber); border-color: rgba(245,158,11,0.35); background: var(--amber-dim); }
+    .diff-pill.hard   { color: var(--red);   border-color: rgba(239,68,68,0.35);  background: var(--red-dim); }
+
+    /* ── Toolbar ──────────────────────────────────────────── */
+    .toolbar {
+      display: flex; gap: 12px; margin-bottom: 20px;
+      flex-wrap: wrap; align-items: center;
+    }
+    .search-wrap {
+      flex: 1; min-width: 220px; position: relative;
+    }
+    .search-icon {
+      position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+      color: var(--text3); font-size: 14px; pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 9px 12px 9px 36px;
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: 8px; color: var(--text); font-family: var(--font-b); font-size: 13px;
+      outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .search-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+    .search-input::placeholder { color: var(--text3); }
+
+    .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 12px;
+      font-family: var(--font-b); font-weight: 600;
+      border: 1px solid var(--border2);
+      background: var(--card); color: var(--text2);
+      transition: all var(--transition);
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--text); }
+    .filter-btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+    .filter-btn.easy.active   { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+    .filter-btn.medium.active { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+    .filter-btn.hard.active   { background: var(--red-dim);   border-color: var(--red);   color: var(--red); }
+
+    /* ── Topic Section ────────────────────────────────────── */
+    .topic-section { margin-bottom: 16px; }
+
+    .topic-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px; border-radius: var(--radius);
+      background: var(--card); border: 1px solid var(--border);
+      cursor: pointer; user-select: none;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .topic-header:hover { border-color: var(--blue); background: var(--card2); }
+    .topic-header.open  { border-color: var(--blue-dim); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+    .topic-chevron {
+      font-size: 12px; color: var(--text3);
+      transition: transform 200ms ease;
+    }
+    .topic-chevron.open { transform: rotate(90deg); }
+
+    .topic-name {
+      font-family: var(--font-h); font-size: 17px; font-weight: 700;
+      color: var(--text); letter-spacing: 0.3px; flex: 1;
+    }
+    .topic-badge {
+      font-family: var(--font-m); font-size: 11px;
+      background: var(--card2); border: 1px solid var(--border2);
+      border-radius: 20px; padding: 2px 10px; color: var(--text2);
+    }
+    .topic-mini-bar {
+      width: 90px; height: 5px;
+      background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .topic-mini-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      transition: width 400ms ease;
+    }
+    .topic-done-count { font-family: var(--font-m); font-size: 11px; color: var(--text3); }
+
+    /* ── Table container ──────────────────────────────────── */
+    .topic-body {
+      border: 1px solid var(--blue-dim); border-top: none;
+      border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    /* ── Subtopic group ───────────────────────────────────── */
+    .subtopic-group { border-bottom: 1px solid var(--border); }
+    .subtopic-group:last-child { border-bottom: none; }
+
+    .subtopic-label {
+      padding: 8px 18px;
+      background: var(--surface);
+      font-family: var(--font-m); font-size: 11px; color: var(--cyan);
+      letter-spacing: 0.8px; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Question Row ─────────────────────────────────────── */
+    .q-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 110px 90px;
+      align-items: center; gap: 0;
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      transition: background var(--transition);
+    }
+    .q-row:last-child { border-bottom: none; }
+    .q-row:hover { background: var(--card2); }
+    .q-row.done-row { opacity: 0.72; }
+
+    .q-status-cell {
+      display: flex; justify-content: center; align-items: center;
+      padding: 12px 0; cursor: pointer;
+    }
+    .status-btn {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; transition: all var(--transition); background: transparent;
+      flex-shrink: 0;
+    }
+    .status-btn.todo     { border-color: var(--text3); }
+    .status-btn.todo:hover { border-color: var(--blue); }
+    .status-btn.in_progress { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+    .status-btn.done     { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+
+    .q-name-cell {
+      padding: 11px 12px 11px 4px;
+    }
+    .q-name-link {
+      color: var(--text); text-decoration: none; font-size: 13px;
+      font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
+      transition: color var(--transition);
+    }
+    .q-name-link:hover { color: var(--blue); }
+    .q-name-link .ext-icon { font-size: 10px; color: var(--text3); opacity: 0.7; }
+
+    .q-diff-cell {
+      padding: 11px 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .diff-tag {
+      font-family: var(--font-m); font-size: 11px; padding: 3px 10px;
+      border-radius: 20px; border: 1px solid; font-weight: 500;
+    }
+    .diff-tag.Easy   { color: var(--green); border-color: rgba(34,197,94,0.3);  background: var(--green-dim); }
+    .diff-tag.Medium { color: var(--amber); border-color: rgba(245,158,11,0.3); background: var(--amber-dim); }
+    .diff-tag.Hard   { color: var(--red);   border-color: rgba(239,68,68,0.3);  background: var(--red-dim); }
+
+    .q-note-cell {
+      padding: 11px 12px;
+      display: flex; align-items: center; justify-content: flex-end;
+    }
+    .note-btn {
+      padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 11px;
+      font-family: var(--font-b); font-weight: 600;
+      border: 1px solid var(--border2); background: transparent; color: var(--text3);
+      transition: all var(--transition); display: flex; align-items: center; gap: 5px;
+    }
+    .note-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-glow); }
+    .note-btn.has-note { border-color: rgba(245,158,11,0.4); color: var(--amber); background: var(--amber-dim); }
+
+    /* ── Notes Inline Panel ───────────────────────────────── */
+    .notes-panel {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 14px 18px;
+      animation: slideDown 180ms ease forwards;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .notes-panel-header {
+      font-family: var(--font-m); font-size: 11px; color: var(--cyan);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .notes-textarea {
+      width: 100%; min-height: 90px;
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: 8px; padding: 10px 12px;
+      color: var(--text); font-family: var(--font-b); font-size: 13px;
+      resize: vertical; outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .notes-textarea:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow);
+    }
+    .notes-textarea::placeholder { color: var(--text3); font-size: 12px; }
+    .notes-actions {
+      display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;
+    }
+
+    /* ── Buttons ──────────────────────────────────────────── */
+    .btn {
+      padding: 7px 16px; border-radius: 7px; cursor: pointer;
+      font-family: var(--font-b); font-size: 12px; font-weight: 600;
+      border: 1px solid; transition: all var(--transition);
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary {
+      background: var(--blue); border-color: var(--blue);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #2563eb; box-shadow: 0 0 14px var(--blue-glow); }
+    .btn-ghost {
+      background: transparent; border-color: var(--border2); color: var(--text2);
+    }
+    .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+    .btn-danger {
+      background: transparent; border-color: rgba(239,68,68,0.35); color: var(--red);
+    }
+    .btn-danger:hover { background: var(--red-dim); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* ── Loading / Error ──────────────────────────────────── */
+    .loading-screen, .error-screen {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 60vh; gap: 16px;
+    }
+    .spinner {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      animation: spin 800ms linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-family: var(--font-m); color: var(--text3); font-size: 12px; }
+    .error-msg { color: var(--red); font-family: var(--font-m); font-size: 13px; }
+
+    /* ── Toast ────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: var(--card2); border: 1px solid var(--border2);
+      border-radius: 10px; padding: 12px 18px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 10px;
+      animation: toastIn 250ms ease forwards;
+    }
+    .toast.success { border-left: 3px solid var(--green); }
+    .toast.error   { border-left: 3px solid var(--red); }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Empty ────────────────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: 48px 0; color: var(--text3);
+      font-family: var(--font-m); font-size: 13px;
+    }
+
+    /* ── API Config Banner ────────────────────────────────── */
+    .api-banner {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 8px; padding: 10px 16px; margin-bottom: 20px;
+      font-size: 12px; color: var(--amber);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .api-input {
+      background: var(--card); border: 1px solid var(--border2);
+      border-radius: 6px; padding: 5px 10px;
+      color: var(--text); font-family: var(--font-m); font-size: 12px;
+      outline: none; width: 260px;
+    }
+    .api-input:focus { border-color: var(--blue); }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .progress-card { grid-column: span 2; }
+      .q-row { grid-template-columns: 40px 1fr 80px; }
+      .q-note-cell { display: none; }
+      .header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Config ──────────────────────────────────────────────────
+const DEFAULT_API = 'http://localhost:8000';
+
+// ── Toast Component ─────────────────────────────────────────
+function Toast({ msg, type, onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 2400);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className={`toast ${type}`}>
+      {type === 'success' ? '✓' : '⚠'} {msg}
+    </div>
+  );
+}
+
+// ── Diff badge ──────────────────────────────────────────────
+function DiffTag({ d }) {
+  return <span className={`diff-tag ${d}`}>{d}</span>;
+}
+
+// ── Status cycle: todo → in_progress → done → todo ──────────
+const STATUS_CYCLE = { todo: 'in_progress', in_progress: 'done', done: 'todo' };
+const STATUS_ICON  = { todo: '', in_progress: '◑', done: '✓' };
+
+// ── Notes Panel ─────────────────────────────────────────────
+function NotesPanel({ qid, initialNotes, onSave, onClose }) {
+  const [notes, setNotes] = useState(initialNotes || '');
+  const [saving, setSaving] = useState(false);
+  const ta = useRef(null);
+
+  useEffect(() => { ta.current?.focus(); }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    await onSave(qid, notes);
+    setSaving(false);
+    onClose();
+  };
+
+  return (
+    <div className="notes-panel">
+      <div className="notes-panel-header">📝 Your Notes</div>
+      <textarea
+        ref={ta}
+        className="notes-textarea"
+        value={notes}
+        onChange={e => setNotes(e.target.value)}
+        placeholder="Add your approach, key insights, time/space complexity, mistakes to avoid..."
+        onKeyDown={e => { if (e.key === 'Escape') onClose(); }}
+      />
+      <div className="notes-actions">
+        <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
+        <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving...' : '💾 Save Notes'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Question Row ─────────────────────────────────────────────
+function QuestionRow({ q, onStatusChange, onNotesSave }) {
+  const [notesOpen, setNotesOpen] = useState(false);
+
+  return (
+    <>
+      <div className={`q-row ${q.status === 'done' ? 'done-row' : ''}`}>
+        {/* Status */}
+        <div className="q-status-cell">
+          <button
+            className={`status-btn ${q.status}`}
+            title={`Status: ${q.status.replace('_',' ')} — click to advance`}
+            onClick={() => onStatusChange(q.id, STATUS_CYCLE[q.status], q.notes)}
+          >
+            {STATUS_ICON[q.status]}
+          </button>
+        </div>
+
+        {/* Name */}
+        <div className="q-name-cell">
+          <a className="q-name-link" href={q.url} target="_blank" rel="noopener noreferrer">
+            {q.name} <span className="ext-icon">↗</span>
+          </a>
+        </div>
+
+        {/* Difficulty */}
+        <div className="q-diff-cell">
+          <DiffTag d={q.difficulty} />
+        </div>
+
+        {/* Notes */}
+        <div className="q-note-cell">
+          <button
+            className={`note-btn ${q.notes ? 'has-note' : ''}`}
+            onClick={() => setNotesOpen(v => !v)}
+            title={q.notes ? 'Edit notes' : 'Add notes'}
+          >
+            {q.notes ? '📝 Edit' : '+ Note'}
+          </button>
+        </div>
+      </div>
+
+      {notesOpen && (
+        <NotesPanel
+          qid={q.id}
+          initialNotes={q.notes}
+          onSave={onNotesSave}
+          onClose={() => setNotesOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
+// ── Subtopic group ───────────────────────────────────────────
+function SubtopicGroup({ subtopic, questions, onStatusChange, onNotesSave }) {
+  return (
+    <div className="subtopic-group">
+      <div className="subtopic-label">⬡ {subtopic}</div>
+      {questions.map(q => (
+        <QuestionRow key={q.id} q={q} onStatusChange={onStatusChange} onNotesSave={onNotesSave} />
+      ))}
+    </div>
+  );
+}
+
+// ── Topic Section ────────────────────────────────────────────
+function TopicSection({ topic, questions, defaultOpen, onStatusChange, onNotesSave }) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  const done  = questions.filter(q => q.status === 'done').length;
+  const total = questions.length;
+  const pct   = total ? Math.round((done / total) * 100) : 0;
+
+  // Group by subtopic
+  const subtopics = {};
+  questions.forEach(q => {
+    if (!subtopics[q.subtopic]) subtopics[q.subtopic] = [];
+    subtopics[q.subtopic].push(q);
+  });
+
+  return (
+    <div className="topic-section">
+      <div className={`topic-header ${open ? 'open' : ''}`} onClick={() => setOpen(v => !v)}>
+        <span className={`topic-chevron ${open ? 'open' : ''}`}>▶</span>
+        <span className="topic-name">{topic}</span>
+        <div className="topic-mini-bar">
+          <div className="topic-mini-fill" style={{ width: `${pct}%` }} />
+        </div>
+        <span className="topic-done-count">{done}/{total}</span>
+        <span className="topic-badge">{total} problems</span>
+      </div>
+
+      {open && (
+        <div className="topic-body">
+          {Object.entries(subtopics).map(([sub, qs]) => (
+            <SubtopicGroup
+              key={sub}
+              subtopic={sub}
+              questions={qs}
+              onStatusChange={onStatusChange}
+              onNotesSave={onNotesSave}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main App ─────────────────────────────────────────────────
+function App() {
+  const [apiUrl, setApiUrl]       = useState(() => localStorage.getItem('dsa_api_url') || DEFAULT_API);
+  const [apiInput, setApiInput]   = useState(apiUrl);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState('');
+  const [toast, setToast]         = useState(null);
+
+  const [search, setSearch]       = useState('');
+  const [diffFilter, setDiffFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
+
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type, key: Date.now() });
+  };
+
+  // ── Fetch ──────────────────────────────────────────────────
+  const fetchQuestions = useCallback(async (url) => {
+    setLoading(true); setError('');
+    try {
+      const r = await fetch(`${url}/questions`);
+      if (!r.ok) throw new Error(`Server error: ${r.status}`);
+      const data = await r.json();
+      setQuestions(data);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchQuestions(apiUrl); }, [apiUrl]);
+
+  const applyApiUrl = () => {
+    const trimmed = apiInput.replace(/\/$/, '');
+    setApiUrl(trimmed);
+    localStorage.setItem('dsa_api_url', trimmed);
+  };
+
+  // ── Status change ──────────────────────────────────────────
+  const handleStatusChange = async (qid, newStatus, notes) => {
+    // Optimistic update
+    setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: newStatus } : q));
+    try {
+      const r = await fetch(`${apiUrl}/progress/${qid}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus, notes: notes || '' }),
+      });
+      if (!r.ok) throw new Error('Failed to update status');
+      showToast(
+        newStatus === 'done' ? '✓ Marked as done!' :
+        newStatus === 'in_progress' ? '◑ In progress' : 'Reset to todo'
+      );
+    } catch (e) {
+      // Rollback
+      setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: STATUS_CYCLE[newStatus] } : q));
+      showToast('Failed to save — is the API running?', 'error');
+    }
+  };
+
+  // ── Notes save ─────────────────────────────────────────────
+  const handleNotesSave = async (qid, notes) => {
+    const q = questions.find(x => x.id === qid);
+    setQuestions(qs => qs.map(x => x.id === qid ? { ...x, notes } : x));
+    try {
+      const r = await fetch(`${apiUrl}/progress/${qid}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: q?.status || 'todo', notes }),
+      });
+      if (!r.ok) throw new Error('Failed to save notes');
+      showToast('Notes saved!');
+    } catch (e) {
+      showToast('Failed to save notes', 'error');
+    }
+  };
+
+  // ── Filter logic ───────────────────────────────────────────
+  const filtered = questions.filter(q => {
+    if (diffFilter !== 'All' && q.difficulty !== diffFilter) return false;
+    if (statusFilter === 'Done'        && q.status !== 'done')        return false;
+    if (statusFilter === 'In Progress' && q.status !== 'in_progress') return false;
+    if (statusFilter === 'Todo'        && q.status !== 'todo')        return false;
+    if (search) {
+      const s = search.toLowerCase();
+      return q.name.toLowerCase().includes(s) || q.topic.toLowerCase().includes(s) || q.subtopic.toLowerCase().includes(s);
+    }
+    return true;
+  });
+
+  // Group by topic
+  const byTopic = {};
+  filtered.forEach(q => {
+    if (!byTopic[q.topic]) byTopic[q.topic] = [];
+    byTopic[q.topic].push(q);
+  });
+
+  // Stats
+  const total      = questions.length;
+  const done       = questions.filter(q => q.status === 'done').length;
+  const inProgress = questions.filter(q => q.status === 'in_progress').length;
+  const todo       = total - done - inProgress;
+  const pct        = total ? Math.round((done / total) * 100) : 0;
+
+  const easyDone   = questions.filter(q => q.difficulty === 'Easy'   && q.status === 'done').length;
+  const medDone    = questions.filter(q => q.difficulty === 'Medium'  && q.status === 'done').length;
+  const hardDone   = questions.filter(q => q.difficulty === 'Hard'    && q.status === 'done').length;
+  const easyTotal  = questions.filter(q => q.difficulty === 'Easy').length;
+  const medTotal   = questions.filter(q => q.difficulty === 'Medium').length;
+  const hardTotal  = questions.filter(q => q.difficulty === 'Hard').length;
+
+  return (
+    <div className="app">
+      {/* Header */}
+      <div className="header">
+        <div className="header-logo">
+          <div className="logo-icon">{'</>'}</div>
+          <div>
+            <h1>DSA <span>Tracker</span></h1>
+            <div className="header-sub">// track your algorithm mastery</div>
+          </div>
+        </div>
+        <div className="header-actions">
+          <button className="btn btn-ghost" onClick={() => fetchQuestions(apiUrl)}>⟳ Refresh</button>
+        </div>
+      </div>
+
+      {/* API Config Banner */}
+      <div className="api-banner">
+        <span>⚡ API Endpoint</span>
+        <input
+          className="api-input"
+          value={apiInput}
+          onChange={e => setApiInput(e.target.value)}
+          placeholder="http://localhost:8000"
+          onKeyDown={e => e.key === 'Enter' && applyApiUrl()}
+        />
+        <button className="btn btn-primary" onClick={applyApiUrl}>Connect</button>
+      </div>
+
+      {/* Stats Row */}
+      {!loading && !error && (
+        <div className="stats-row">
+          <div className="stat-card total">
+            <div className="stat-label">Total</div>
+            <div className="stat-value">{total}</div>
+          </div>
+          <div className="stat-card done">
+            <div className="stat-label">Solved</div>
+            <div className="stat-value">{done}</div>
+          </div>
+          <div className="stat-card prog">
+            <div className="stat-label">In Progress</div>
+            <div className="stat-value">{inProgress}</div>
+          </div>
+          <div className="stat-card todo">
+            <div className="stat-label">Todo</div>
+            <div className="stat-value">{todo}</div>
+          </div>
+          <div className="stat-card progress-card">
+            <div className="stat-label">Overall Progress</div>
+            <div className="stat-value" style={{fontSize:'24px'}}>{pct}%</div>
+            <div className="progress-bar-wrap">
+              <div className="progress-bar-fill" style={{ width: `${pct}%` }} />
+            </div>
+            <div className="diff-pills">
+              <span className="diff-pill easy">E: {easyDone}/{easyTotal}</span>
+              <span className="diff-pill medium">M: {medDone}/{medTotal}</span>
+              <span className="diff-pill hard">H: {hardDone}/{hardTotal}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toolbar */}
+      <div className="toolbar">
+        <div className="search-wrap">
+          <span className="search-icon">🔍</span>
+          <input
+            className="search-input"
+            placeholder="Search problems, topics, subtopics..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="filter-group">
+          {['All', 'Easy', 'Medium', 'Hard'].map(d => (
+            <button
+              key={d}
+              className={`filter-btn ${d.toLowerCase()} ${diffFilter === d ? 'active' : ''}`}
+              onClick={() => setDiffFilter(d)}
+            >{d}</button>
+          ))}
+        </div>
+        <div className="filter-group">
+          {['All', 'Todo', 'In Progress', 'Done'].map(s => (
+            <button
+              key={s}
+              className={`filter-btn ${statusFilter === s ? 'active' : ''}`}
+              onClick={() => setStatusFilter(s)}
+            >{s}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      {loading && (
+        <div className="loading-screen">
+          <div className="spinner" />
+          <div className="loading-text">Connecting to API...</div>
+        </div>
+      )}
+
+      {!loading && error && (
+        <div className="error-screen">
+          <div style={{fontSize:'36px'}}>⚡</div>
+          <div className="error-msg">Cannot reach API: {error}</div>
+          <div style={{color:'var(--text3)', fontFamily:'var(--font-m)', fontSize:'12px', textAlign:'center', maxWidth:'420px'}}>
+            Make sure the FastAPI server is running:<br/>
+            <span style={{color:'var(--cyan)'}}>cd backend && uvicorn main:app --reload --port 8000</span>
+          </div>
+          <button className="btn btn-primary" onClick={() => fetchQuestions(apiUrl)}>Retry</button>
+        </div>
+      )}
+
+      {!loading && !error && Object.entries(byTopic).length === 0 && (
+        <div className="empty-state">No problems match your filters.</div>
+      )}
+
+      {!loading && !error && Object.entries(byTopic).map(([topic, qs], i) => (
+        <TopicSection
+          key={topic}
+          topic={topic}
+          questions={qs}
+          defaultOpen={i === 0}
+          onStatusChange={handleStatusChange}
+          onNotesSave={handleNotesSave}
+        />
+      ))}
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          key={toast.key}
+          msg={toast.msg}
+          type={toast.type === 'error' ? 'error' : 'success'}
+          onDone={() => setToast(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
