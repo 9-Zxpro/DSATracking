@@ -124,8 +124,18 @@
       transition: var(--transition);
       display: flex; flex-direction: column; justify-content: space-between;
     }
-    .stat-card:hover { border-color: var(--border-focus); transform: translateY(-2px); }
     
+    /* Interactive Card Styles */
+    .stat-card.clickable { cursor: pointer; user-select: none; }
+    .stat-card.clickable:hover { border-color: var(--border-focus); transform: translateY(-2px); }
+    .stat-card.clickable:active { transform: translateY(0); }
+    
+    /* Active Card Filter Highlights */
+    .stat-card.clickable.active.total { border-color: var(--primary); background: var(--primary-dim); box-shadow: 0 0 12px var(--primary-glow); }
+    .stat-card.clickable.active.done  { border-color: var(--success); background: var(--success-dim); box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
+    .stat-card.clickable.active.prog  { border-color: var(--warning); background: var(--warning-dim); box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
+    .stat-card.clickable.active.todo  { border-color: var(--text-muted); background: rgba(255,255,255,0.03); }
+
     .stat-label {
       font-size: 13px; font-weight: 500; color: var(--text-muted);
       margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
@@ -824,22 +834,38 @@ function App() {
       {/* Stats Row */}
       {!loading && !error && (
         <div className="stats-row">
-          <div className="stat-card total">
+          <div 
+            className={`stat-card total clickable ${statusFilter === 'All' ? 'active' : ''}`} 
+            onClick={() => setStatusFilter('All')}
+          >
             <div className="stat-label">Total</div>
             <div className="stat-value">{total}</div>
           </div>
-          <div className="stat-card done">
+          
+          <div 
+            className={`stat-card done clickable ${statusFilter === 'Done' ? 'active' : ''}`} 
+            onClick={() => setStatusFilter('Done')}
+          >
             <div className="stat-label">Solved</div>
             <div className="stat-value">{done}</div>
           </div>
-          <div className="stat-card prog">
+          
+          <div 
+            className={`stat-card prog clickable ${statusFilter === 'In Progress' ? 'active' : ''}`} 
+            onClick={() => setStatusFilter('In Progress')}
+          >
             <div className="stat-label">In Progress</div>
             <div className="stat-value">{inProgress}</div>
           </div>
-          <div className="stat-card todo">
+          
+          <div 
+            className={`stat-card todo clickable ${statusFilter === 'Todo' ? 'active' : ''}`} 
+            onClick={() => setStatusFilter('Todo')}
+          >
             <div className="stat-label">Todo</div>
             <div className="stat-value">{todo}</div>
           </div>
+          
           <div className="stat-card progress-card">
             <div className="stat-label">Overall Progress</div>
             <div className="stat-value" style={{fontSize:'32px'}}>{pct}%</div>
