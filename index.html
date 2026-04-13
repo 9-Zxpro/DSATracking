@@ -16,7 +16,6 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Premium Dark Mode Palette */
       --bg:          #09090b;
       --surface:     #121214;
       --card:        #18181b;
@@ -24,10 +23,10 @@
       --border:      #27272a;
       --border-focus:#3f3f46;
 
-      --primary:     #6366f1; /* Indigo */
+      --primary:     #6366f1;
       --primary-dim: rgba(99, 102, 241, 0.15);
       --primary-glow:rgba(99, 102, 241, 0.3);
-      --accent:      #a855f7; /* Purple */
+      --accent:      #a855f7;
 
       --success:     #10b981;
       --success-dim: rgba(16, 185, 129, 0.15);
@@ -59,10 +58,8 @@
       line-height: 1.6;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Subtle mesh background */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -73,13 +70,11 @@
 
     #root { position: relative; z-index: 1; }
 
-    /* ── Scrollbar ─────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
 
-    /* ── Layout ───────────────────────────────────────────── */
     .app { max-width: 1040px; margin: 0 auto; padding: 0 24px 80px; }
 
     /* ── Header ───────────────────────────────────────────── */
@@ -98,362 +93,162 @@
       font-family: var(--font-mono); font-size: 20px; color: #fff;
       font-weight: 600; box-shadow: 0 8px 24px var(--primary-glow);
     }
-    .header h1 {
-      font-family: var(--font-head); font-size: 32px; font-weight: 700;
-      letter-spacing: -0.5px; line-height: 1.2;
-    }
-    .header h1 span { 
-      background: linear-gradient(to right, #a5b4fc, #c084fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    .header h1 { font-family: var(--font-head); font-size: 32px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+    .header h1 span { background: linear-gradient(to right, #a5b4fc, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .header-sub { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
     .header-actions { display: flex; gap: 12px; align-items: center; }
 
     /* ── Stats Row ────────────────────────────────────────── */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr) 2fr;
-      gap: 16px; margin-bottom: 32px;
-    }
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      transition: var(--transition);
-      display: flex; flex-direction: column; justify-content: space-between;
-    }
-    
-    /* Interactive Card Styles */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr) 2fr; gap: 16px; margin-bottom: 32px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: var(--transition); display: flex; flex-direction: column; justify-content: space-between; }
     .stat-card.clickable { cursor: pointer; user-select: none; }
     .stat-card.clickable:hover { border-color: var(--border-focus); transform: translateY(-2px); }
     .stat-card.clickable:active { transform: translateY(0); }
-    
-    /* Active Card Filter Highlights */
     .stat-card.clickable.active.total { border-color: var(--primary); background: var(--primary-dim); box-shadow: 0 0 12px var(--primary-glow); }
     .stat-card.clickable.active.done  { border-color: var(--success); background: var(--success-dim); box-shadow: 0 0 12px rgba(16, 185, 129, 0.2); }
     .stat-card.clickable.active.prog  { border-color: var(--warning); background: var(--warning-dim); box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
     .stat-card.clickable.active.todo  { border-color: var(--text-muted); background: rgba(255,255,255,0.03); }
-
-    .stat-label {
-      font-size: 13px; font-weight: 500; color: var(--text-muted);
-      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-    }
-    .stat-label::before {
-      content: ''; display: block; width: 8px; height: 8px; border-radius: 50%;
-    }
+    .stat-label { font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .stat-label::before { content: ''; display: block; width: 8px; height: 8px; border-radius: 50%; }
     .stat-card.total .stat-label::before  { background: var(--primary); }
     .stat-card.done .stat-label::before   { background: var(--success); }
     .stat-card.prog .stat-label::before   { background: var(--warning); }
     .stat-card.todo .stat-label::before   { background: var(--text-faint); }
     .stat-card.progress-card .stat-label::before { display: none; }
-
-    .stat-value {
-      font-family: var(--font-head); font-size: 36px; font-weight: 600; line-height: 1;
-    }
-    
+    .stat-value { font-family: var(--font-head); font-size: 36px; font-weight: 600; line-height: 1; }
     .progress-card { grid-column: span 1; }
-    .progress-bar-wrap {
-      margin-top: 16px; margin-bottom: 12px;
-      background: var(--surface); border-radius: 999px; height: 6px; overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%; border-radius: 999px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* ── Diff Pills ────────────────────────────────────────── */
+    .progress-bar-wrap { margin-top: 16px; margin-bottom: 12px; background: var(--surface); border-radius: 999px; height: 6px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
     .diff-pills { display: flex; gap: 8px; flex-wrap: wrap; }
-    .diff-pill {
-      font-size: 11px; font-family: var(--font-mono); padding: 4px 10px;
-      border-radius: 6px; font-weight: 500;
-    }
+    .diff-pill { font-size: 11px; font-family: var(--font-mono); padding: 4px 10px; border-radius: 6px; font-weight: 500; }
     .diff-pill.easy   { color: var(--success); background: var(--success-dim); }
     .diff-pill.medium { color: var(--warning); background: var(--warning-dim); }
     .diff-pill.hard   { color: var(--danger);  background: var(--danger-dim); }
 
     /* ── Toolbar ──────────────────────────────────────────── */
-    .toolbar {
-      display: flex; gap: 16px; margin-bottom: 24px;
-      flex-wrap: wrap; align-items: center;
-      background: var(--card); padding: 12px; border-radius: var(--radius);
-      border: 1px solid var(--border);
-    }
+    .toolbar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; align-items: center; background: var(--card); padding: 12px; border-radius: var(--radius); border: 1px solid var(--border); }
     .search-wrap { flex: 1; min-width: 240px; position: relative; }
-    .search-icon {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--text-muted); font-size: 14px; pointer-events: none;
-    }
-    .search-input {
-      width: 100%; padding: 10px 16px 10px 40px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); color: var(--text-main); font-family: var(--font-body);
-      font-size: 14px; outline: none; transition: var(--transition);
-    }
-    .search-input:focus {
-      border-color: var(--primary); background: var(--bg);
-      box-shadow: 0 0 0 3px var(--primary-dim);
-    }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; pointer-events: none; }
+    .search-input { width: 100%; padding: 10px 16px 10px 40px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-main); font-family: var(--font-body); font-size: 14px; outline: none; transition: var(--transition); }
+    .search-input:focus { border-color: var(--primary); background: var(--bg); box-shadow: 0 0 0 3px var(--primary-dim); }
     .search-input::placeholder { color: var(--text-faint); }
-
     .filter-group { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
-    .filter-btn {
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
-      font-family: var(--font-body); font-weight: 500; border: none;
-      background: transparent; color: var(--text-muted);
-      transition: var(--transition);
-    }
+    .filter-btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-family: var(--font-body); font-weight: 500; border: none; background: transparent; color: var(--text-muted); transition: var(--transition); }
     .filter-btn:hover { color: var(--text-main); }
     .filter-btn.active { background: var(--border-focus); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-    
-    /* Specific active colors for difficulty */
     .filter-btn.easy.active   { background: var(--success-dim); color: var(--success); }
     .filter-btn.medium.active { background: var(--warning-dim); color: var(--warning); }
     .filter-btn.hard.active   { background: var(--danger-dim);  color: var(--danger); }
 
     /* ── Topic Section ────────────────────────────────────── */
     .topic-section { margin-bottom: 16px; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
-
-    .topic-header {
-      display: flex; align-items: center; gap: 16px;
-      padding: 16px 24px; background: var(--card); 
-      cursor: pointer; user-select: none; transition: var(--transition);
-    }
+    .topic-header { display: flex; align-items: center; gap: 16px; padding: 16px 24px; background: var(--card); cursor: pointer; user-select: none; transition: var(--transition); }
     .topic-header:hover { background: var(--card-hover); }
     .topic-header.open  { border-bottom: 1px solid var(--border); }
-
-    .topic-chevron {
-      font-size: 12px; color: var(--text-muted);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    .topic-chevron { font-size: 12px; color: var(--text-muted); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
     .topic-chevron.open { transform: rotate(90deg); }
-
-    .topic-name {
-      font-family: var(--font-head); font-size: 18px; font-weight: 600;
-      color: var(--text-main); flex: 1;
-    }
-    .topic-badge {
-      font-size: 12px; font-weight: 500;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 6px; padding: 4px 10px; color: var(--text-muted);
-    }
-    .topic-mini-bar {
-      width: 100px; height: 6px;
-      background: var(--surface); border-radius: 999px; overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .topic-mini-fill {
-      height: 100%; border-radius: 999px;
-      background: var(--text-muted); transition: width 0.6s ease;
-    }
+    .topic-name { font-family: var(--font-head); font-size: 18px; font-weight: 600; color: var(--text-main); flex: 1; }
+    .topic-badge { font-size: 12px; font-weight: 500; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; color: var(--text-muted); }
+    .topic-mini-bar { width: 100px; height: 6px; background: var(--surface); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+    .topic-mini-fill { height: 100%; border-radius: 999px; background: var(--text-muted); transition: width 0.6s ease; }
     .topic-header.open .topic-mini-fill { background: var(--primary); }
     .topic-done-count { font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); width: 44px; text-align: right; }
-
-    /* ── Table container ──────────────────────────────────── */
     .topic-body { background: var(--bg); }
-
-    /* ── Subtopic group ───────────────────────────────────── */
     .subtopic-group { border-bottom: 1px solid var(--border); }
     .subtopic-group:last-child { border-bottom: none; }
-
-    .subtopic-label {
-      padding: 12px 24px; background: rgba(255,255,255,0.02);
-      font-family: var(--font-head); font-size: 12px; color: var(--primary);
-      letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600;
-      border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
-    }
+    .subtopic-label { padding: 12px 24px; background: rgba(255,255,255,0.02); font-family: var(--font-head); font-size: 12px; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
 
     /* ── Question Row ─────────────────────────────────────── */
-    .q-row {
-      display: grid; grid-template-columns: 50px 1fr 120px 100px;
-      align-items: center; background: transparent; transition: var(--transition);
-      border-bottom: 1px solid var(--border);
-    }
+    .q-row { display: grid; grid-template-columns: 50px 1fr 120px 100px; align-items: center; background: transparent; transition: var(--transition); border-bottom: 1px solid var(--border); }
     .q-row:last-child { border-bottom: none; }
     .q-row:hover { background: var(--surface); }
     .q-row.done-row { opacity: 0.6; }
     .q-row.done-row:hover { opacity: 1; }
-
     .q-status-cell { display: flex; justify-content: center; align-items: center; padding: 14px 0; }
-    .status-btn {
-      width: 24px; height: 24px; border-radius: 6px;
-      border: 2px solid var(--border-focus); cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; transition: var(--transition); background: var(--card);
-      flex-shrink: 0; color: transparent; font-weight: bold;
-    }
+    .status-btn { width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--border-focus); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; transition: var(--transition); background: var(--card); flex-shrink: 0; color: transparent; font-weight: bold; }
     .status-btn.todo:hover { border-color: var(--primary); background: var(--primary-dim); }
     .status-btn.in_progress { border-color: var(--warning); background: var(--warning); color: var(--bg); }
     .status-btn.done { border-color: var(--success); background: var(--success); color: var(--bg); }
-
     .q-name-cell { padding: 14px 12px 14px 0; }
-    .q-name-link {
-      color: var(--text-main); text-decoration: none; font-size: 14px;
-      font-weight: 500; display: inline-flex; align-items: center; gap: 8px;
-      transition: var(--transition);
-    }
+    .q-name-link { color: var(--text-main); text-decoration: none; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
     .q-name-link:hover { color: var(--primary); }
     .q-name-link .ext-icon { font-size: 12px; color: var(--text-faint); }
-
     .q-diff-cell { padding: 14px 12px; display: flex; justify-content: flex-start; }
-    .diff-tag {
-      font-size: 12px; font-weight: 500; padding: 4px 10px;
-      border-radius: 6px; display: inline-block; text-align: center; min-width: 68px;
-    }
+    .diff-tag { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; display: inline-block; text-align: center; min-width: 68px; }
     .diff-tag.Easy   { color: var(--success); background: var(--success-dim); }
     .diff-tag.Medium { color: var(--warning); background: var(--warning-dim); }
     .diff-tag.Hard   { color: var(--danger);  background: var(--danger-dim); }
-
     .q-note-cell { padding: 14px 24px 14px 12px; display: flex; justify-content: flex-end; }
-    .note-btn {
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;
-      font-family: var(--font-body); font-weight: 500; border: none;
-      background: var(--surface); color: var(--text-muted); transition: var(--transition);
-      display: flex; align-items: center; gap: 6px; border: 1px solid var(--border);
-    }
+    .note-btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-family: var(--font-body); font-weight: 500; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: var(--transition); display: flex; align-items: center; gap: 6px; }
     .note-btn:hover { border-color: var(--primary); color: var(--text-main); background: var(--card-hover); }
     .note-btn.has-note { color: var(--accent); border-color: rgba(168,85,247,0.3); background: rgba(168,85,247,0.1); }
 
-    /* ── Modal Overlay (Notes) ────────────────────────────── */
-    .modal-backdrop {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: flex; align-items: center; justify-content: center;
-      animation: fadeIn 0.2s ease-out forwards;
-    }
-    .modal-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 100%; max-width: 540px;
-      padding: 24px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
-      animation: scaleUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      margin: 0 20px;
-      display: flex; flex-direction: column; gap: 16px;
-    }
-    
+    /* ── Modal ────────────────────────────────────────────── */
+    .modal-backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease-out forwards; }
+    .modal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 540px; padding: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.5); animation: scaleUp 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; margin: 0 20px; display: flex; flex-direction: column; gap: 16px; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes scaleUp { 
-      from { opacity: 0; transform: scale(0.95) translateY(10px); } 
-      to { opacity: 1; transform: scale(1) translateY(0); } 
-    }
-
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .modal-title {
-      font-family: var(--font-head); font-size: 18px; color: var(--text-main); font-weight: 600;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .modal-close {
-      background: var(--card); border: 1px solid var(--border);
-      color: var(--text-muted); cursor: pointer; font-size: 18px; 
-      width: 32px; height: 32px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      transition: var(--transition);
-    }
+    @keyframes scaleUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-family: var(--font-head); font-size: 18px; color: var(--text-main); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .modal-close { background: var(--card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
     .modal-close:hover { color: var(--text-main); border-color: var(--border-focus); background: var(--card-hover); }
-
-    .notes-textarea {
-      width: 100%; min-height: 180px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 16px;
-      color: var(--text-main); font-family: var(--font-body); font-size: 14px;
-      resize: vertical; outline: none; transition: var(--transition);
-      line-height: 1.6;
-    }
+    .notes-textarea { width: 100%; min-height: 180px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; color: var(--text-main); font-family: var(--font-body); font-size: 14px; resize: vertical; outline: none; transition: var(--transition); line-height: 1.6; }
     .notes-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
     .notes-textarea::placeholder { color: var(--text-faint); }
-    
-    .modal-footer {
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .modal-hint {
-      font-family: var(--font-mono); font-size: 11px; color: var(--text-faint);
-    }
+
+    /* ── Modal Footer ─────────────────────────────────────── */
+    .modal-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .modal-footer-left { display: flex; align-items: center; gap: 12px; }
+    .modal-hint { font-family: var(--font-mono); font-size: 11px; color: var(--text-faint); }
     .notes-actions { display: flex; gap: 12px; }
 
+    /* ── Reset confirm strip ──────────────────────────────── */
+    .reset-confirm-strip {
+      background: var(--danger-dim);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      animation: scaleUp 0.15s ease forwards;
+    }
+    .reset-confirm-text { font-size: 13px; color: var(--danger); font-weight: 500; }
+    .reset-confirm-actions { display: flex; gap: 8px; }
+
     /* ── Buttons ──────────────────────────────────────────── */
-    .btn {
-      padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer;
-      font-family: var(--font-body); font-size: 13px; font-weight: 500;
-      border: 1px solid transparent; transition: var(--transition);
-      display: inline-flex; align-items: center; gap: 8px; justify-content: center;
-    }
-    .btn-primary {
-      background: var(--primary); color: #fff;
-    }
+    .btn { padding: 8px 16px; border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font-body); font-size: 13px; font-weight: 500; border: 1px solid transparent; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+    .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover:not(:disabled) { background: #4f46e5; box-shadow: 0 4px 12px var(--primary-glow); }
-    .btn-ghost {
-      background: transparent; border-color: var(--border); color: var(--text-main);
-    }
+    .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-main); }
     .btn-ghost:hover:not(:disabled) { background: var(--surface); border-color: var(--border-focus); }
-    .btn-danger {
-      background: transparent; border-color: var(--danger-dim); color: var(--danger);
-    }
+    .btn-danger { background: transparent; border-color: var(--danger-dim); color: var(--danger); }
     .btn-danger:hover:not(:disabled) { background: var(--danger-dim); }
+    .btn-danger-solid { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-danger-solid:hover:not(:disabled) { background: #dc2626; }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-sm { padding: 5px 10px; font-size: 12px; }
 
     /* ── Loading / Error ──────────────────────────────────── */
-    .loading-screen, .error-screen {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 40vh; gap: 16px;
-      background: var(--card); border: 1px dashed var(--border-focus);
-      border-radius: var(--radius); padding: 40px;
-    }
-    .spinner {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 3px solid var(--surface); border-top-color: var(--primary);
-      animation: spin 0.8s linear infinite;
-    }
+    .loading-screen, .error-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 40vh; gap: 16px; background: var(--card); border: 1px dashed var(--border-focus); border-radius: var(--radius); padding: 40px; }
+    .spinner { width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--surface); border-top-color: var(--primary); animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .loading-text { font-family: var(--font-mono); color: var(--text-muted); font-size: 13px; }
     .error-msg { color: var(--danger); font-family: var(--font-mono); font-size: 14px; text-align: center; }
 
     /* ── Toast ────────────────────────────────────────────── */
-    .toast {
-      position: fixed; bottom: 32px; right: 32px; z-index: 9999;
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 14px 20px;
-      font-size: 14px; font-weight: 500; color: var(--text-main);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-      display: flex; align-items: center; gap: 12px;
-      animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
+    .toast { position: fixed; bottom: 32px; right: 32px; z-index: 9999; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 20px; font-size: 14px; font-weight: 500; color: var(--text-main); box-shadow: 0 12px 40px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 12px; animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     .toast.success { border-left: 4px solid var(--success); }
     .toast.error   { border-left: 4px solid var(--danger); }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(20px) scale(0.95); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    .toast.warning { border-left: 4px solid var(--warning); }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
     /* ── Empty ────────────────────────────────────────────── */
-    .empty-state {
-      text-align: center; padding: 64px 24px; color: var(--text-muted);
-      font-family: var(--font-body); font-size: 14px; background: var(--card);
-      border: 1px dashed var(--border-focus); border-radius: var(--radius);
-    }
+    .empty-state { text-align: center; padding: 64px 24px; color: var(--text-muted); font-family: var(--font-body); font-size: 14px; background: var(--card); border: 1px dashed var(--border-focus); border-radius: var(--radius); }
 
-    /* ── API Config Banner ────────────────────────────────── */
-    .api-banner {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px;
-      font-size: 13px; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    }
+    /* ── API Banner ───────────────────────────────────────── */
+    .api-banner { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; font-size: 13px; color: var(--text-main); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .api-banner span { font-family: var(--font-head); font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
     .api-input-wrap { display: flex; gap: 12px; flex: 1; justify-content: flex-end; }
-    .api-input {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); padding: 8px 12px;
-      color: var(--text-main); font-family: var(--font-mono); font-size: 13px;
-      outline: none; width: 100%; max-width: 320px; transition: var(--transition);
-    }
+    .api-input { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; color: var(--text-main); font-family: var(--font-mono); font-size: 13px; outline: none; width: 100%; max-width: 320px; transition: var(--transition); }
     .api-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-dim); }
 
     /* ── Responsive ───────────────────────────────────────── */
@@ -475,10 +270,9 @@
 <script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
-// ── Config ──────────────────────────────────────────────────
 const DEFAULT_API = 'https://dsabackend.onrender.com';
 
-// ── Toast Component ─────────────────────────────────────────
+// ── Toast ────────────────────────────────────────────────────
 function Toast({ msg, type, onDone }) {
   useEffect(() => {
     const t = setTimeout(onDone, 2400);
@@ -486,29 +280,28 @@ function Toast({ msg, type, onDone }) {
   }, []);
   return (
     <div className={`toast ${type}`}>
-      {type === 'success' ? '✓' : '⚠'} {msg}
+      {type === 'success' ? '✓' : type === 'warning' ? '⚠' : '✕'} {msg}
     </div>
   );
 }
 
-// ── Diff badge ──────────────────────────────────────────────
 function DiffTag({ d }) {
   return <span className={`diff-tag ${d}`}>{d}</span>;
 }
 
-// ── Status cycle: todo → in_progress → done → todo ──────────
 const STATUS_CYCLE = { todo: 'in_progress', in_progress: 'done', done: 'todo' };
 const STATUS_ICON  = { todo: '', in_progress: '◑', done: '✓' };
 
-// ── Modal Notes Panel ───────────────────────────────────────
-function NotesPanel({ qid, questionName, initialNotes, onSave, onClose }) {
-  const [notes, setNotes] = useState(initialNotes || '');
-  const [saving, setSaving] = useState(false);
+// ── Notes Modal ──────────────────────────────────────────────
+function NotesPanel({ qid, questionName, initialNotes, initialStatus, onSave, onReset, onClose }) {
+  const [notes, setNotes]               = useState(initialNotes || '');
+  const [saving, setSaving]             = useState(false);
+  const [resetting, setResetting]       = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
   const ta = useRef(null);
 
-  useEffect(() => { 
-    ta.current?.focus(); 
-    // Lock background scrolling when modal is open
+  useEffect(() => {
+    ta.current?.focus();
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
   }, []);
@@ -520,61 +313,112 @@ function NotesPanel({ qid, questionName, initialNotes, onSave, onClose }) {
     onClose();
   };
 
-  const handleBackdropClick = (e) => {
-    // Close modal if user clicks on the dark overlay background
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+  const handleReset = async () => {
+    setResetting(true);
+    await onReset(qid);
+    setResetting(false);
+    onClose();
   };
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) onClose();
+  };
+
+  // If already todo with no notes, reset button has nothing to do
+  const canReset = initialStatus !== 'todo' || (initialNotes && initialNotes.trim() !== '');
 
   return (
     <div className="modal-backdrop" onClick={handleBackdropClick}>
       <div className="modal-card">
+
+        {/* Header */}
         <div className="modal-header">
           <div className="modal-title">
-            <span>📝</span> Notes: {questionName}
+            <span>📝</span> {questionName}
           </div>
-          <button className="modal-close" onClick={onClose} title="Close">&times;</button>
+          <button className="modal-close" onClick={onClose}>&times;</button>
         </div>
-        
+
+        {/* Textarea */}
         <textarea
           ref={ta}
           className="notes-textarea"
           value={notes}
           onChange={e => setNotes(e.target.value)}
-          placeholder="Document your approach, time/space complexity, or common pitfalls here..."
-          onKeyDown={e => { 
-            if (e.key === 'Escape') onClose(); 
-            // Save on Cmd+Enter or Ctrl+Enter
+          placeholder="Document your approach, time/space complexity, or common pitfalls..."
+          onKeyDown={e => {
+            if (e.key === 'Escape') onClose();
             if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
               e.preventDefault();
               handleSave();
             }
           }}
         />
-        
+
+        {/* Reset confirm strip — shown inline when confirmReset is true */}
+        {confirmReset && (
+          <div className="reset-confirm-strip">
+            <span className="reset-confirm-text">
+              ⚠ Reset progress &amp; clear notes for this question?
+            </span>
+            <div className="reset-confirm-actions">
+              <button
+                className="btn btn-ghost btn-sm"
+                onClick={() => setConfirmReset(false)}
+                disabled={resetting}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger-solid btn-sm"
+                onClick={handleReset}
+                disabled={resetting}
+              >
+                {resetting ? 'Resetting...' : 'Yes, Reset'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
         <div className="modal-footer">
-          <div className="modal-hint">Press Cmd/Ctrl + Enter to save</div>
+          <div className="modal-footer-left">
+            {canReset && !confirmReset && (
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={() => setConfirmReset(true)}
+                disabled={saving || resetting}
+                title="Reset progress and clear notes"
+              >
+                🗑 Reset Progress
+              </button>
+            )}
+            {!confirmReset && (
+              <span className="modal-hint">Cmd/Ctrl + Enter to save</span>
+            )}
+          </div>
           <div className="notes-actions">
-            <button className="btn btn-ghost" onClick={onClose} disabled={saving}>Cancel</button>
-            <button className="btn btn-primary" onClick={handleSave} disabled={saving}>
+            <button className="btn btn-ghost" onClick={onClose} disabled={saving || resetting}>
+              Cancel
+            </button>
+            <button className="btn btn-primary" onClick={handleSave} disabled={saving || resetting}>
               {saving ? 'Saving...' : 'Save Notes'}
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
 }
 
 // ── Question Row ─────────────────────────────────────────────
-function QuestionRow({ q, onStatusChange, onNotesSave }) {
+function QuestionRow({ q, onStatusChange, onNotesSave, onReset }) {
   const [notesOpen, setNotesOpen] = useState(false);
 
   return (
     <>
       <div className={`q-row ${q.status === 'done' ? 'done-row' : ''}`}>
-        {/* Status */}
         <div className="q-status-cell">
           <button
             className={`status-btn ${q.status}`}
@@ -584,20 +428,14 @@ function QuestionRow({ q, onStatusChange, onNotesSave }) {
             {STATUS_ICON[q.status]}
           </button>
         </div>
-
-        {/* Name */}
         <div className="q-name-cell">
           <a className="q-name-link" href={q.url} target="_blank" rel="noopener noreferrer">
             {q.name} <span className="ext-icon">↗</span>
           </a>
         </div>
-
-        {/* Difficulty */}
         <div className="q-diff-cell">
           <DiffTag d={q.difficulty} />
         </div>
-
-        {/* Notes */}
         <div className="q-note-cell">
           <button
             className={`note-btn ${q.notes ? 'has-note' : ''}`}
@@ -614,7 +452,9 @@ function QuestionRow({ q, onStatusChange, onNotesSave }) {
           qid={q.id}
           questionName={q.name}
           initialNotes={q.notes}
+          initialStatus={q.status}
           onSave={onNotesSave}
+          onReset={onReset}
           onClose={() => setNotesOpen(false)}
         />
       )}
@@ -622,35 +462,50 @@ function QuestionRow({ q, onStatusChange, onNotesSave }) {
   );
 }
 
-// ── Subtopic group ───────────────────────────────────────────
-function SubtopicGroup({ subtopic, questions, onStatusChange, onNotesSave }) {
+// ── Subtopic Group ───────────────────────────────────────────
+function SubtopicGroup({ subtopic, questions, onStatusChange, onNotesSave, onReset }) {
   return (
     <div className="subtopic-group">
       <div className="subtopic-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
         {subtopic}
       </div>
       {questions.map(q => (
-        <QuestionRow key={q.id} q={q} onStatusChange={onStatusChange} onNotesSave={onNotesSave} />
+        <QuestionRow
+          key={q.id}
+          q={q}
+          onStatusChange={onStatusChange}
+          onNotesSave={onNotesSave}
+          onReset={onReset}
+        />
       ))}
     </div>
   );
 }
 
 // ── Topic Section ────────────────────────────────────────────
-function TopicSection({ topic, questions, defaultOpen, onStatusChange, onNotesSave }) {
+function TopicSection({ topic, questions, defaultOpen, onStatusChange, onNotesSave, onReset }) {
   const [open, setOpen] = useState(defaultOpen);
 
   const done  = questions.filter(q => q.status === 'done').length;
   const total = questions.length;
   const pct   = total ? Math.round((done / total) * 100) : 0;
 
-  // Group by subtopic
-  const subtopics = {};
+  // Group by subtopic, preserve sort_order
+  const subtopicMap = {};
   questions.forEach(q => {
-    if (!subtopics[q.subtopic]) subtopics[q.subtopic] = [];
-    subtopics[q.subtopic].push(q);
+    const key = q.subtopic;
+    if (!subtopicMap[key]) subtopicMap[key] = { sort_order: q.sort_order || 0, questions: [] };
+    subtopicMap[key].questions.push(q);
   });
+
+  const sortedSubtopics = Object.entries(subtopicMap).sort(
+    ([, a], [, b]) => a.sort_order - b.sort_order
+  );
 
   return (
     <div className="topic-section">
@@ -666,13 +521,14 @@ function TopicSection({ topic, questions, defaultOpen, onStatusChange, onNotesSa
 
       {open && (
         <div className="topic-body">
-          {Object.entries(subtopics).map(([sub, qs]) => (
+          {sortedSubtopics.map(([sub, { questions: qs }]) => (
             <SubtopicGroup
               key={sub}
               subtopic={sub}
               questions={qs}
               onStatusChange={onStatusChange}
               onNotesSave={onNotesSave}
+              onReset={onReset}
             />
           ))}
         </div>
@@ -683,14 +539,13 @@ function TopicSection({ topic, questions, defaultOpen, onStatusChange, onNotesSa
 
 // ── Main App ─────────────────────────────────────────────────
 function App() {
-  const [apiUrl, setApiUrl]       = useState(() => localStorage.getItem('dsa_api_url') || DEFAULT_API);
-  const [apiInput, setApiInput]   = useState(apiUrl);
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState('');
-  const [toast, setToast]         = useState(null);
-
-  const [search, setSearch]       = useState('');
+  const [apiUrl, setApiUrl]         = useState(() => localStorage.getItem('dsa_api_url') || DEFAULT_API);
+  const [apiInput, setApiInput]     = useState(apiUrl);
+  const [questions, setQuestions]   = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState('');
+  const [toast, setToast]           = useState(null);
+  const [search, setSearch]         = useState('');
   const [diffFilter, setDiffFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
 
@@ -698,7 +553,7 @@ function App() {
     setToast({ msg, type, key: Date.now() });
   };
 
-  // ── Fetch ──────────────────────────────────────────────────
+  // ── Fetch ────────────────────────────────────────────────
   const fetchQuestions = useCallback(async (url) => {
     setLoading(true); setError('');
     try {
@@ -721,9 +576,8 @@ function App() {
     localStorage.setItem('dsa_api_url', trimmed);
   };
 
-  // ── Status change ──────────────────────────────────────────
+  // ── Status change ────────────────────────────────────────
   const handleStatusChange = async (qid, newStatus, notes) => {
-    // Optimistic update
     setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: newStatus } : q));
     try {
       const r = await fetch(`${apiUrl}/progress/${qid}`, {
@@ -731,19 +585,18 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus, notes: notes || '' }),
       });
-      if (!r.ok) throw new Error('Failed to update status');
+      if (!r.ok) throw new Error('Failed');
       showToast(
-        newStatus === 'done' ? 'Marked as done!' :
+        newStatus === 'done' ? 'Marked as done! 🎉' :
         newStatus === 'in_progress' ? 'Moved to in progress' : 'Reset to todo'
       );
-    } catch (e) {
-      // Rollback
+    } catch {
       setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: STATUS_CYCLE[newStatus] } : q));
-      showToast('Failed to save — check backend connection', 'error');
+      showToast('Failed to save — check backend', 'error');
     }
   };
 
-  // ── Notes save ─────────────────────────────────────────────
+  // ── Notes save ───────────────────────────────────────────
   const handleNotesSave = async (qid, notes) => {
     const q = questions.find(x => x.id === qid);
     setQuestions(qs => qs.map(x => x.id === qid ? { ...x, notes } : x));
@@ -753,14 +606,31 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: q?.status || 'todo', notes }),
       });
-      if (!r.ok) throw new Error('Failed to save notes');
-      showToast('Notes saved successfully');
-    } catch (e) {
+      if (!r.ok) throw new Error('Failed');
+      showToast('Notes saved ✓');
+    } catch {
       showToast('Failed to save notes', 'error');
     }
   };
 
-  // ── Filter logic ───────────────────────────────────────────
+  // ── Reset single question ────────────────────────────────
+  const handleReset = async (qid) => {
+    // Optimistic update — clear status and notes
+    setQuestions(qs => qs.map(q => q.id === qid ? { ...q, status: 'todo', notes: '' } : q));
+    try {
+      const r = await fetch(`${apiUrl}/progress/${qid}`, {
+        method: 'DELETE',
+      });
+      if (!r.ok) throw new Error('Failed');
+      showToast('Progress reset', 'warning');
+    } catch {
+      // Rollback would need original values — just refetch
+      fetchQuestions(apiUrl);
+      showToast('Failed to reset', 'error');
+    }
+  };
+
+  // ── Filter ───────────────────────────────────────────────
   const filtered = questions.filter(q => {
     if (diffFilter !== 'All' && q.difficulty !== diffFilter) return false;
     if (statusFilter === 'Done'        && q.status !== 'done')        return false;
@@ -768,16 +638,25 @@ function App() {
     if (statusFilter === 'Todo'        && q.status !== 'todo')        return false;
     if (search) {
       const s = search.toLowerCase();
-      return q.name.toLowerCase().includes(s) || q.topic.toLowerCase().includes(s) || q.subtopic.toLowerCase().includes(s);
+      const inName = q.name.toLowerCase().includes(s);
+      const inCats = (q.categories || []).some(
+        c => c.topic.toLowerCase().includes(s) || c.subtopic.toLowerCase().includes(s)
+      );
+      return inName || inCats;
     }
     return true;
   });
 
-  // Group by topic
+  // Group by topic — expand multi-category questions into each topic
   const byTopic = {};
   filtered.forEach(q => {
-    if (!byTopic[q.topic]) byTopic[q.topic] = [];
-    byTopic[q.topic].push(q);
+    const cats = q.categories && q.categories.length > 0
+      ? q.categories
+      : [{ topic: q.topic, subtopic: q.subtopic, sort_order: 0 }];
+    cats.forEach(({ topic, subtopic, sort_order }) => {
+      if (!byTopic[topic]) byTopic[topic] = [];
+      byTopic[topic].push({ ...q, subtopic, sort_order });
+    });
   });
 
   // Stats
@@ -786,7 +665,6 @@ function App() {
   const inProgress = questions.filter(q => q.status === 'in_progress').length;
   const todo       = total - done - inProgress;
   const pct        = total ? Math.round((done / total) * 100) : 0;
-
   const easyDone   = questions.filter(q => q.difficulty === 'Easy'   && q.status === 'done').length;
   const medDone    = questions.filter(q => q.difficulty === 'Medium'  && q.status === 'done').length;
   const hardDone   = questions.filter(q => q.difficulty === 'Hard'    && q.status === 'done').length;
@@ -807,16 +685,23 @@ function App() {
         </div>
         <div className="header-actions">
           <button className="btn btn-ghost" onClick={() => fetchQuestions(apiUrl)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-            Refresh Data
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Refresh
           </button>
         </div>
       </div>
 
-      {/* API Config Banner */}
+      {/* API Banner */}
       <div className="api-banner">
         <span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
           API Endpoint
         </span>
         <div className="api-input-wrap">
@@ -831,41 +716,25 @@ function App() {
         </div>
       </div>
 
-      {/* Stats Row */}
+      {/* Stats */}
       {!loading && !error && (
         <div className="stats-row">
-          <div 
-            className={`stat-card total clickable ${statusFilter === 'All' ? 'active' : ''}`} 
-            onClick={() => setStatusFilter('All')}
-          >
+          <div className={`stat-card total clickable ${statusFilter === 'All' ? 'active' : ''}`} onClick={() => setStatusFilter('All')}>
             <div className="stat-label">Total</div>
             <div className="stat-value">{total}</div>
           </div>
-          
-          <div 
-            className={`stat-card done clickable ${statusFilter === 'Done' ? 'active' : ''}`} 
-            onClick={() => setStatusFilter('Done')}
-          >
+          <div className={`stat-card done clickable ${statusFilter === 'Done' ? 'active' : ''}`} onClick={() => setStatusFilter('Done')}>
             <div className="stat-label">Solved</div>
             <div className="stat-value">{done}</div>
           </div>
-          
-          <div 
-            className={`stat-card prog clickable ${statusFilter === 'In Progress' ? 'active' : ''}`} 
-            onClick={() => setStatusFilter('In Progress')}
-          >
+          <div className={`stat-card prog clickable ${statusFilter === 'In Progress' ? 'active' : ''}`} onClick={() => setStatusFilter('In Progress')}>
             <div className="stat-label">In Progress</div>
             <div className="stat-value">{inProgress}</div>
           </div>
-          
-          <div 
-            className={`stat-card todo clickable ${statusFilter === 'Todo' ? 'active' : ''}`} 
-            onClick={() => setStatusFilter('Todo')}
-          >
+          <div className={`stat-card todo clickable ${statusFilter === 'Todo' ? 'active' : ''}`} onClick={() => setStatusFilter('Todo')}>
             <div className="stat-label">Todo</div>
             <div className="stat-value">{todo}</div>
           </div>
-          
           <div className="stat-card progress-card">
             <div className="stat-label">Overall Progress</div>
             <div className="stat-value" style={{fontSize:'32px'}}>{pct}%</div>
@@ -885,7 +754,9 @@ function App() {
       <div className="toolbar">
         <div className="search-wrap">
           <span className="search-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
           </span>
           <input
             className="search-input"
@@ -896,20 +767,12 @@ function App() {
         </div>
         <div className="filter-group">
           {['All', 'Easy', 'Medium', 'Hard'].map(d => (
-            <button
-              key={d}
-              className={`filter-btn ${d.toLowerCase()} ${diffFilter === d ? 'active' : ''}`}
-              onClick={() => setDiffFilter(d)}
-            >{d}</button>
+            <button key={d} className={`filter-btn ${d.toLowerCase()} ${diffFilter === d ? 'active' : ''}`} onClick={() => setDiffFilter(d)}>{d}</button>
           ))}
         </div>
         <div className="filter-group">
           {['All', 'Todo', 'In Progress', 'Done'].map(s => (
-            <button
-              key={s}
-              className={`filter-btn ${statusFilter === s ? 'active' : ''}`}
-              onClick={() => setStatusFilter(s)}
-            >{s}</button>
+            <button key={s} className={`filter-btn ${statusFilter === s ? 'active' : ''}`} onClick={() => setStatusFilter(s)}>{s}</button>
           ))}
         </div>
       </div>
@@ -927,7 +790,7 @@ function App() {
           <div style={{fontSize:'48px'}}>🔌</div>
           <div className="error-msg">Cannot reach API: {error}</div>
           <div style={{color:'var(--text-muted)', fontSize:'13px', textAlign:'center', maxWidth:'420px', lineHeight:'1.6'}}>
-            Ensure your backend is running and accessible. If running locally:<br/>
+            Ensure your backend is running and accessible.<br/>
             <span style={{color:'var(--accent)', fontFamily:'var(--font-mono)'}}>uvicorn main:app --reload --port 8000</span>
           </div>
           <button className="btn btn-primary" onClick={() => fetchQuestions(apiUrl)}>Retry Connection</button>
@@ -946,17 +809,12 @@ function App() {
           defaultOpen={i === 0}
           onStatusChange={handleStatusChange}
           onNotesSave={handleNotesSave}
+          onReset={handleReset}
         />
       ))}
 
-      {/* Toast */}
       {toast && (
-        <Toast
-          key={toast.key}
-          msg={toast.msg}
-          type={toast.type === 'error' ? 'error' : 'success'}
-          onDone={() => setToast(null)}
-        />
+        <Toast key={toast.key} msg={toast.msg} type={toast.type} onDone={() => setToast(null)} />
       )}
     </div>
   );
